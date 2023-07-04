@@ -10,7 +10,8 @@ const OK = 'OK';
 const getAllBooks = async (req: Request, res: Response) => {
   const books = await booksService.getAllBooks();
   // const books = { resposta: 'OK' };
-  res.status(statusCodes.OK).json({ 
+  res.status(statusCodes.OK).json({
+    ok: true,
     status: statusCodes.OK,
     message: OK,
     data: books});

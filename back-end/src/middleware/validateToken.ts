@@ -7,6 +7,7 @@ const { JWTSECRET } = process.env;
 const validateToken = (req: Request, res: Response, next: NextFunction) => {
   const { authorization: token } = req.headers;
   if (!token) return res.status(statusCodes.UNAUTHORIZED).json({
+    ok: false,
     status: statusCodes.UNAUTHORIZED,
     message: 'Token not found',
     data: {}
@@ -17,6 +18,7 @@ const validateToken = (req: Request, res: Response, next: NextFunction) => {
     next();
   } catch (e) {
     return res.status(statusCodes.UNAUTHORIZED).json({
+      ok: false,
       status: statusCodes.UNAUTHORIZED,
       message: 'Expired or invalid token',
       data: {}

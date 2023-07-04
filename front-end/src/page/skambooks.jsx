@@ -33,16 +33,18 @@ class skambooks extends Component {
     };
     const { dispatch, history } = this.props;
     // const books = await getAllBooks(options);
-    const books = await myFetch(options, 'books');
-    if (books.message) {
+    const { status, message, data: books } = await myFetch(options, 'books');
+    if ( status !== 200) {
+      alert(message);
       history.push('/');
     }
     // const reader = await getReaderById(options);
-    const reader = await myFetch(options, 'readers')
+    const response = await myFetch(options, 'readers');
+    console.log(response);
     this.setState({
-      reader: reader,
+      reader: response.data.id,
     });
-    dispatch(idReader(reader.id));
+    dispatch(idReader(response.data.id));
     const result = requiretBooks(books);
     dispatch(result);
   };
@@ -61,8 +63,8 @@ class skambooks extends Component {
       };
 
       // const { message } = await deleteBook(id, options);
-      const { message } = await myFetch(options, `books/${id}`);
-      if (message === `Books deleted: ${id}`) {
+      const { status, message } = await myFetch(options, `books/${id}`);
+      if ( status === '200' ) {
         const { book, dispatch } = this.props;
         const result = book.filter((item) => item.id !== id);
         const r = requiretBooks(result);

@@ -40,14 +40,11 @@ class initialPage extends Component {
       },
       body: JSON.stringify(update),
     };
-    const response = await myFetch(options, 'login');
-    const { status } = response;
-    const { message, token } = await response.json();
-    console.log(status, message, token);
-    if (message) {
-      alert(message);
-    } if (token) {
-      localStorage.setItem('token', token);
+    const { ok, status, message, data } = await myFetch(options, 'login');
+    if (!ok) {
+      alert(`${status}-${message}`);
+    } if (data.token) {
+      localStorage.setItem('token', data.token);
       const { history } = this.props;
       history.push('/skambooks');
     }
