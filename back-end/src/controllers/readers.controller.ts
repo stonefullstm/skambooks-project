@@ -6,7 +6,7 @@ import statusCodes from '../statusCodes';
 import { internalError } from '../utils';
 require('dotenv/config');
 
-const secret = process.env.JWTSECRET || 'seusecretdetoken';
+const secret = process.env.JWT_SECRET || 'gatopreto';
 const READER_NOT_FOUND = 'Reader not found';
 const OK = 'OK';
 
@@ -73,7 +73,8 @@ const getReaderByEmail = async (req: Request, res: Response) => {
     algorithm: 'HS256',
   };
   const token = jwt.sign( userData, secret as string, jwtConfig);
-
+  console.log(secret);
+  
   res.status(statusCodes.OK).json({
     ok: true,
     status: statusCodes.OK,
