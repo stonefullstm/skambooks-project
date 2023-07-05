@@ -9,14 +9,24 @@ const { JWTSECRET } = process.env;
 const validateToken = (req, res, next) => {
     const { authorization: token } = req.headers;
     if (!token)
-        return res.status(statusCodes_1.default.UNAUTHORIZED).json({ message: 'Token not found' });
+        return res.status(statusCodes_1.default.UNAUTHORIZED).json({
+            ok: false,
+            status: statusCodes_1.default.UNAUTHORIZED,
+            message: 'Token not found',
+            data: {}
+        });
     try {
         const user = jwt.verify(token, JWTSECRET);
         req.body.user = user;
         next();
     }
     catch (e) {
-        return res.status(statusCodes_1.default.UNAUTHORIZED).json({ message: 'Expired or invalid token' });
+        return res.status(statusCodes_1.default.UNAUTHORIZED).json({
+            ok: false,
+            status: statusCodes_1.default.UNAUTHORIZED,
+            message: 'Expired or invalid token',
+            data: {}
+        });
     }
 };
 exports.default = validateToken;
