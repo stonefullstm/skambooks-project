@@ -151,7 +151,7 @@ class skambooks extends Component {
     const { reader, disabled, nome, id } = this.state;
     const { book, readers } = this.props;
     const list = book.map((item, index) => {
-      if (item.readers.id === reader.id) {
+      if (item.readers.id === reader) {
         return (<div key={index} className='list'>
           <div className='coverbook'>
             { item.coverUrl !== 'coverbook' ? <img src={item.coverUrl} className='img1' alt='CoverUrl'/> : <img src={coverbook} className='img1' alt='CoverUrl'/>}

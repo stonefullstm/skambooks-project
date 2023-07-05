@@ -4,19 +4,34 @@ import exchangesService from '../services/exchanges.service';
 import readersService from '../services/readers.service';
 import statusCodes from '../statusCodes';
 
+const EXCHANGE_NOT_FOUND = 'Exchange not found'; 
+const OK = 'OK';
+
 const getAllExchangesByReader = async (req: Request, res: Response) => {
   const { id } = req.body.user;
   const exchanges = await exchangesService.getAllExchangesByReader(id);
-  res.status(statusCodes.OK).json(exchanges);
+  res.status(statusCodes.OK).json({
+    ok: true,
+    status: statusCodes.OK,
+    message: OK,
+    data: exchanges});
 };
 
 const getExchangeById = async (req: Request, res: Response) => {
   const { id } = req.params;
   const result = await exchangesService.getExchangeById(Number(id));
   if (result) {
-    return res.status(statusCodes.OK).json(result);
+    return res.status(statusCodes.OK).json({
+      ok: true,
+      status: statusCodes.OK,
+      message: OK,
+      data: result});
   }
-  return res.status(statusCodes.NOT_FOUND).json({ message: 'Exchange not found'});
+  return res.status(statusCodes.NOT_FOUND).json({
+    ok: false,
+    status: statusCodes.NOT_FOUND,
+    message: EXCHANGE_NOT_FOUND,
+    data: {}});
 }
 
 const createExchange = async (req: Request, res: Response) => {
@@ -24,15 +39,27 @@ const createExchange = async (req: Request, res: Response) => {
   const { id: senderId } = req.body.user;
   const book = await booksService.getBookById(bookId);
   if (!book || book.readerId !== senderId) {
-    return res.status(statusCodes.BAD_REQUEST).json({ message: 'Book is not owned by this reader' });
+    return res.status(statusCodes.BAD_REQUEST).json({
+      ok: false,
+      status: statusCodes.BAD_REQUEST, 
+      message: 'Book is not owned by this reader',
+      data: {} });
   }
   const reader = await readersService.getReaderById(receiverId);
   if (!reader || reader.credits === 0) {
-    return res.status(statusCodes.BAD_REQUEST).json({ message: 'Reader has no credits' });
+    return res.status(statusCodes.BAD_REQUEST).json({
+      ok: false,
+      status: statusCodes.BAD_REQUEST,
+      message: 'Reader has no credits',
+      data: {} });
   }
   const newExchange = await exchangesService.createExchange({ senderId, receiverId, bookId, sendDate: '', receiveDate: '' });
   if (newExchange) {
-    return res.status(statusCodes.CREATED).json({ message: 'Create sucess! '});
+    return res.status(statusCodes.CREATED).json({
+      ok: true,
+      status: statusCodes.CREATED,
+      message: 'Create sucess! ',
+      data: newExchange});
   }
 }
 

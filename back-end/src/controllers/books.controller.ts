@@ -22,11 +22,13 @@ const getBookById = async ( req: Request, res: Response) => {
   const result = await booksService.getBookById(Number(id));
   if (result) {
     return res.status(statusCodes.OK).json({
+      ok: true,
       status: statusCodes.OK,
       message: OK,
       data: result});
   }
   return res.status(statusCodes.NOT_FOUND).json({
+    ok: false,
     status: statusCodes.NOT_FOUND, 
     message: BOOK_NOT_FOUND,
     data: {}
@@ -37,14 +39,16 @@ const deleteBook = async ( req: Request, res: Response) => {
   const { id } = req.params;
   const result = await booksService.getBookById(Number(id));
   if (!result) {
-    return res.status(statusCodes.NOT_FOUND).json({ 
+    return res.status(statusCodes.NOT_FOUND).json({
+      ok: false,
       status: statusCodes.NOT_FOUND, 
       message: BOOK_NOT_FOUND,
       data: {}});
   }
   const exchanges = await exchangesService.getAllExchangesByBook(Number(id));
   if (exchanges && exchanges.length > 0) {
-    return res.status(statusCodes.BAD_REQUEST).json({ 
+    return res.status(statusCodes.BAD_REQUEST).json({
+      ok: false, 
       status: statusCodes.BAD_REQUEST, 
       message: 'Book has exchanges',
       data: {}});
@@ -52,6 +56,7 @@ const deleteBook = async ( req: Request, res: Response) => {
   const deletedQty = await booksService.deleteBook(Number(id));
   if (deletedQty) {
     return res.status(statusCodes.OK).json({
+      ok: true,
       status: statusCodes.OK, 
       message: `Book deleted: ${id}`,
       data: {}
@@ -66,6 +71,7 @@ const createBook = async (req: Request, res: Response) => {
   const { id: readerId } = req.body.user;
   const newBook = await booksService.createBook({isbn, title, year, pages, readerId, coverUrl, authors});
   return res.status(statusCodes.CREATED).json({
+    ok: true,
     status: statusCodes.CREATED,
     message: 'Created book',
     data: newBook
@@ -77,13 +83,15 @@ const updateBook = async (req: Request, res: Response) => {
   const { id: readerId } = req.body.user;
   const result = await booksService.getBookById(Number(id));
   if (!result) {
-    return res.status(statusCodes.NOT_FOUND).json({ 
+    return res.status(statusCodes.NOT_FOUND).json({
+      ok: false,
       status: statusCodes.NOT_FOUND, 
       message: BOOK_NOT_FOUND,
       data: {}});
   }
   if (result.readerId !== readerId) {
     return res.status(statusCodes.BAD_REQUEST).json({
+      ok: false,
       status: statusCodes.BAD_REQUEST,
       message: 'Book is not owned by this reader',
       data: {}
@@ -91,7 +99,8 @@ const updateBook = async (req: Request, res: Response) => {
   }
   const updatedQty = await booksService.updateBook( req.body, Number(id));
   if (updatedQty) {
-    return res.status(statusCodes.OK).json({ 
+    return res.status(statusCodes.OK).json({
+      ok: true, 
       status: statusCodes.OK,
       message: `Updated book ${id}`,
       data: {}
