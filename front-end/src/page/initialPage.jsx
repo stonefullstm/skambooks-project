@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { Link } from "react-router-dom";
-import '../App.css';
 import { myFetch } from '../services/fetchs';
+import style from './css/login.module.css';
+import { showAlert } from './alerts/alert';
 
 const MIN_LENGTH_INPUT = 8;
 class initialPage extends Component {
@@ -42,7 +43,7 @@ class initialPage extends Component {
     };
     const { ok, status, message, data } = await myFetch(options, 'login');
     if (!ok) {
-      alert(`${status}-${message}`);
+      showAlert(status, message);
     } if (data.token) {
       localStorage.setItem('token', data.token);
       const { history } = this.props;
@@ -53,7 +54,7 @@ class initialPage extends Component {
   render() {
     const { buttonIsDisabled } = this.state;
     return (
-      <div className='login'>
+      <div className={ style.login }>
         <h1 className='title'>User Login</h1>
         <input type='text'
           placeholder='E-mail'

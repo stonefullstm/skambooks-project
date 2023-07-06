@@ -1,5 +1,4 @@
 import { Route, Switch } from 'react-router-dom';
-import './App.css';
 import initialPage from './page/initialPage';
 import skambooks from './page/skambooks';
 import createUser from './page/createUser';

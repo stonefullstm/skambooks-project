@@ -16,33 +16,65 @@ const books_service_1 = __importDefault(require("../services/books.service"));
 const exchanges_service_1 = __importDefault(require("../services/exchanges.service"));
 const readers_service_1 = __importDefault(require("../services/readers.service"));
 const statusCodes_1 = __importDefault(require("../statusCodes"));
+const EXCHANGE_NOT_FOUND = 'Exchange not found';
+const OK = 'OK';
 const getAllExchangesByReader = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.body.user;
     const exchanges = yield exchanges_service_1.default.getAllExchangesByReader(id);
-    res.status(statusCodes_1.default.OK).json(exchanges);
+    res.status(statusCodes_1.default.OK).json({
+        ok: true,
+        status: statusCodes_1.default.OK,
+        message: OK,
+        data: exchanges
+    });
 });
 const getExchangeById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
     const result = yield exchanges_service_1.default.getExchangeById(Number(id));
     if (result) {
-        return res.status(statusCodes_1.default.OK).json(result);
+        return res.status(statusCodes_1.default.OK).json({
+            ok: true,
+            status: statusCodes_1.default.OK,
+            message: OK,
+            data: result
+        });
     }
-    return res.status(statusCodes_1.default.NOT_FOUND).json({ message: 'Exchange not found' });
+    return res.status(statusCodes_1.default.NOT_FOUND).json({
+        ok: false,
+        status: statusCodes_1.default.NOT_FOUND,
+        message: EXCHANGE_NOT_FOUND,
+        data: {}
+    });
 });
 const createExchange = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { receiverId, bookId } = req.body;
     const { id: senderId } = req.body.user;
     const book = yield books_service_1.default.getBookById(bookId);
     if (!book || book.readerId !== senderId) {
-        return res.status(statusCodes_1.default.BAD_REQUEST).json({ message: 'Book is not owned by this reader' });
+        return res.status(statusCodes_1.default.BAD_REQUEST).json({
+            ok: false,
+            status: statusCodes_1.default.BAD_REQUEST,
+            message: 'Book is not owned by this reader',
+            data: {}
+        });
     }
     const reader = yield readers_service_1.default.getReaderById(receiverId);
     if (!reader || reader.credits === 0) {
-        return res.status(statusCodes_1.default.BAD_REQUEST).json({ message: 'Reader has no credits' });
+        return res.status(statusCodes_1.default.BAD_REQUEST).json({
+            ok: false,
+            status: statusCodes_1.default.BAD_REQUEST,
+            message: 'Reader has no credits',
+            data: {}
+        });
     }
     const newExchange = yield exchanges_service_1.default.createExchange({ senderId, receiverId, bookId, sendDate: '', receiveDate: '' });
     if (newExchange) {
-        return res.status(statusCodes_1.default.CREATED).json({ message: 'Create sucess! ' });
+        return res.status(statusCodes_1.default.CREATED).json({
+            ok: true,
+            status: statusCodes_1.default.CREATED,
+            message: 'Create sucess! ',
+            data: newExchange
+        });
     }
 });
 const confirmExchange = (req, res) => __awaiter(void 0, void 0, void 0, function* () {

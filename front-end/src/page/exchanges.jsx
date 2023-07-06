@@ -24,11 +24,11 @@ export default class exchanges extends Component {
     };
     // const result = await getExchanges(options);
     // const reader = await getReaderById(options);
-    const result = await myFetch(options, 'exchanges');
+    const {data} = await myFetch(options, 'exchanges');
     const reader = await myFetch(options, 'readers');
     this.setState({
-      exchange: result,
-      reader: reader,
+      exchange: data,
+      reader: reader.data,
     });
   };
 

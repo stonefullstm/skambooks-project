@@ -5,7 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const statusCodes_1 = __importDefault(require("../statusCodes"));
 const jwt = require('jsonwebtoken');
-const { JWTSECRET } = process.env;
+const { JWT_SECRET } = process.env;
 const validateToken = (req, res, next) => {
     const { authorization: token } = req.headers;
     if (!token)
@@ -16,7 +16,7 @@ const validateToken = (req, res, next) => {
             data: {}
         });
     try {
-        const user = jwt.verify(token, JWTSECRET);
+        const user = jwt.verify(token, JWT_SECRET);
         req.body.user = user;
         next();
     }
