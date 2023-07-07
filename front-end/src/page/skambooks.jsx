@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Link } from "react-router-dom";
 import { idReader, requiretBooks, requiretReaders, updateBook } from '../actions/action';
 import '../App.css';
 import biblioteca from '../images/biblioteca.png';
@@ -12,6 +11,8 @@ import troca from '../images/troca.png';
 import { myFetch } from '../services/fetchs';
 import './exchanges.css';
 import { showAlert, showAlertSucces, showAlertConfirm, showAlertSwitch } from './alerts/alert';
+import style from './css/skambooks.module.css';
+import Navbar from './navbar/Navbar';
 
 
 class skambooks extends Component {
@@ -54,23 +55,23 @@ class skambooks extends Component {
 
 
   handleExcluir = async (id) => {
-      const token = localStorage.getItem('token');
-      const options = {
-        method: 'DELETE',
-        headers: {
-          'Accept': 'application/json',
-          'Content-type': 'application/json',
-          'Authorization': `${token}`,
-        },
-      };
-      const { status, message } = await myFetch(options, `books/${id}`);
-      if (status === '200') {
-        const { book, dispatch } = this.props;
-        const result = book.filter((item) => item.id !== id);
-        const r = requiretBooks(result);
-        dispatch(r);
-      }
-      showAlert(status, message);
+    const token = localStorage.getItem('token');
+    const options = {
+      method: 'DELETE',
+      headers: {
+        'Accept': 'application/json',
+        'Content-type': 'application/json',
+        'Authorization': `${token}`,
+      },
+    };
+    const { ok, message } = await myFetch(options, `books/${id}`);
+    if (ok) {
+      const { book, dispatch } = this.props;
+      const result = book.filter((item) => item.id !== id);
+      const r = requiretBooks(result);
+      dispatch(r);
+    }
+    showAlert(ok, message);
   };
 
   handleSwitch = (ids) => {
@@ -78,26 +79,26 @@ class skambooks extends Component {
   }
 
   handleReader = async (ids) => {
-      const token = localStorage.getItem('token');
-      const options = {
-        method: 'GET',
-        headers: {
-          'Accept': 'application/json',
-          'Content-type': 'application/json',
-          'Authorization': `${token}`,
-        },
-      };
-      const { dispatch } = this.props;
-      const { reader } = this.state;
-      const { data } = await myFetch(options, 'readers/names');
-      const readerSqt = data.filter((item) => item.id !== reader.id);
-      if (data.length > 0) {
-        this.setState({
-          disabled: true,
-          id: ids,
-        });
-        dispatch(requiretReaders(readerSqt));
-      }
+    const token = localStorage.getItem('token');
+    const options = {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Content-type': 'application/json',
+        'Authorization': `${token}`,
+      },
+    };
+    const { dispatch } = this.props;
+    const { reader } = this.state;
+    const { data } = await myFetch(options, 'readers/names');
+    const readerSqt = data.filter((item) => item.id !== reader.id);
+    if (data.length > 0) {
+      this.setState({
+        disabled: true,
+        id: ids,
+      });
+      dispatch(requiretReaders(readerSqt));
+    }
   };
 
   handleSelect = ({ target }) => {
@@ -163,11 +164,11 @@ class skambooks extends Component {
             <li>year: <strong>{item.year}</strong></li>
           </div>
           {disabled && item.id === id ? <div>
-            <p><strong>Whats user?</strong></p>
-            <select value={nome} onChange={this.handleSelect}>
+            <p><strong>whatuser?</strong></p>
+            <select value={nome} onChange={this.handleSelect} className={style.select}>
               {readers.map((i) => <option value={i.name}>{i.name}</option>)}
             </select>
-            <button type='button' onClick={() => this.handleSender(item.id)}> Trocar </button>
+            <button type='button' className={style.switch} onClick={() => this.handleSender(item.id)}> Trocar </button>
           </div> : null}
 
           <div className='div-button'>
@@ -183,13 +184,8 @@ class skambooks extends Component {
       <div>
         <img src={biblioteca} className='img11' alt='CoverUrl' />
         <h1 className='skan'>SKAMBOOKS</h1>
-        <header className='header'>
-          <h2 className='book'>My books</h2>
-          <h2><Link to='/exchange' className='Link'>My exchanges</Link></h2>
-          <h2 className='search'><Link to='/search' className='Link'>Search books</Link></h2>
-          <h2 className='logout'><Link to='/' className='Link'>Logout</Link></h2>
-        </header>
-        <h1>My books</h1>
+        <Navbar />
+        <h1 className='titles'>My books</h1>
         <button type='button'
           className='button-mais' onClick={this.handleMais}><img src={mais} alt="Images" className='mais' /></button>
         <ol>

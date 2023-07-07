@@ -103,10 +103,15 @@ const updateBook = async (req: Request, res: Response) => {
       ok: true, 
       status: statusCodes.OK,
       message: `Updated book ${id}`,
-      data: {}
+      data: updatedQty,
     });
   }
-  return res.status(statusCodes.ERROR).json(internalError);
+  return res.status(statusCodes.ERROR).json({
+    ok: false, 
+    status: statusCodes.ERROR,
+    message: internalError,
+    data: {}
+  });
 }
 
 export default {

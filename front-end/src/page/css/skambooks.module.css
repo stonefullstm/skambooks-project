@@ -1,0 +1,18 @@
+.switch{
+  width: 75px;
+  background-color: rgb(115, 116, 113);
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-style: italic;
+  font-size: large;
+  padding: 10px;
+  margin-left: 2px;
+  border-radius: 5px;
+}
+
+.select{
+  background-color: rgb(115, 116, 113);
+  font-style: italic;
+  font-size: large;
+  padding: 10px;
+  border-radius: 5px;
+}

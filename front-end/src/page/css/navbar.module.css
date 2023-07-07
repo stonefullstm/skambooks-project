@@ -1,0 +1,18 @@
+@import url('https://fonts.googleapis.com/css2?family=Lobster&display=swap');
+
+.header {
+  display: flex;
+  background-color: #F2E878;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  height: 100%;
+}
+
+.link {
+  margin-right: 150px;
+  margin-bottom: 25px;
+  margin-left: 150px;
+  text-decoration: none;
+  font-family: Lobster;
+  font-size: x-large;
+}

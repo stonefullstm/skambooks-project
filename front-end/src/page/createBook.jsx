@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import '../App.css';
 import { getBookIsbn, myFetch } from '../services/fetchs';
 import './exchanges.css';
+import { showAlertSucces } from './alerts/alert';
 
 const MIN_ISBN = 13;
 const MIN_YEAR = 4;
@@ -96,8 +97,8 @@ class createBook extends Component {
       body: JSON.stringify(updated),
     };
     // const { message } = await createBooks(options);
-    const { message } = await myFetch(options, 'books');
-    alert(message);
+    const { status, message } = await myFetch(options, 'books');
+    showAlertSucces(status, message);
     history.push('/skambooks');
   };
 
@@ -109,7 +110,6 @@ class createBook extends Component {
   render() {
 
     const { buttonIsDisabled, title, year, pages, coverUrl, authors } = this.state;
-    /* console.log(title, year, pages, isbn, coverUrl ); */
     console.log(authors);
     return (
       <div className='create-user'>
