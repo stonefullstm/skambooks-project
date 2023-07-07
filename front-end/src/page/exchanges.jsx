@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Link } from "react-router-dom";
 import '../App.css';
 import biblioteca from '../images/biblioteca.png';
 import confirme from '../images/confirme.png';
@@ -7,6 +6,8 @@ import coverbook from '../images/coverbook.jpg';
 import excluir from '../images/excluir.png';
 import { myFetch } from '../services/fetchs';
 import './exchanges.css';
+import Navbar from './navbar/Navbar';
+import { showAlert, showAlertSucces, showAlertConfirm, showAlertSwitch } from './alerts/alert';
 
 export default class exchanges extends Component {
   state = {
@@ -22,19 +23,19 @@ export default class exchanges extends Component {
         'Authorization': `${token}`,
       },
     };
-    // const result = await getExchanges(options);
-    // const reader = await getReaderById(options);
-    const result = await myFetch(options, 'exchanges');
+    const { data } = await myFetch(options, 'exchanges');
     const reader = await myFetch(options, 'readers');
     this.setState({
-      exchange: result,
-      reader: reader,
+      exchange: data,
+      reader: reader.data,
     });
   };
 
+  handleDelete = (id) => {
+    showAlertConfirm(id, this.handleClicDelete);
+  };
+
   handleClicDelete = async (id) => {
-    let r = window.confirm(`Are you sure you want to delete the id ${id}?`);
-    if (r) {
       const token = localStorage.getItem('token');
       const options = {
         method: 'DELETE',
@@ -43,19 +44,19 @@ export default class exchanges extends Component {
           'Authorization': `${token}`,
         },
       };
-      // const { message } = await deleteExchanges(id, options);
-      const { message } = await myFetch(options, `exchanges/${id}`);
-      alert(message);
+      const { ok, message } = await myFetch(options, `exchanges/${id}`);
       const { exchange } = this.state;
       this.setState({
         exchange: exchange.filter((i) => i.id !== id),
       });
-    };
+      showAlert(ok, message);
   };
 
+  handleSwitch = (ids) => {
+    showAlertSwitch(ids, this.handleClicConfirme)
+  }
+
   handleClicConfirme = async (id) => {
-    let r = window.confirm(`Are you sure you want to change the id ${id}?`);
-    if (r) {
       const token = localStorage.getItem('token');
       const options = {
         method: 'PUT',
@@ -64,10 +65,8 @@ export default class exchanges extends Component {
           'Authorization': `${token}`,
         },
       };
-      // const { message } = await confirmeExchanges(id, options);
-      const { message } = await myFetch(options, `exchanges/${id}`);
-      alert(message);
-    };
+      const { status, message } = await myFetch(options, `exchanges/${id}`);
+      showAlertSucces(status, message);
   };
 
   render() {
@@ -96,8 +95,8 @@ export default class exchanges extends Component {
             <li>receivedDate: <strong>{item.receiveDate}</strong></li>
           </div>
           <div className='div-button'>
-            {isDisabled ? <button type='button' className='button-list' onClick={() => this.handleClicDelete(item.id)}><img src={excluir} alt='images' className='img' /></button> : null}
-            {disableReceiver ? <button type='button' className='button-list' onClick={() => this.handleClicConfirme(item.id)}><img src={confirme} alt='images' className='img' /></button> : null}
+            {isDisabled ? <button type='button' className='button-list' onClick={() => this.handleDelete(item.id)}><img src={excluir} alt='images' className='img' /></button> : null}
+            {disableReceiver ? <button type='button' className='button-list' onClick={() => this.handleSwitch(item.id)}><img src={confirme} alt='images' className='img' /></button> : null}
           </div>
         </div>)
       }
@@ -108,8 +107,8 @@ export default class exchanges extends Component {
       <div>
         <img src={biblioteca} className='img11' alt='CoverUrl' />
         <h1 className='skan'>SKAMBOOKS</h1>
-        <header className='header'><h2 className='book'><Link to='/skambooks' className='Link'>My books</Link></h2><h2>My exchanges</h2><h2 className='search'><Link to='/search' className='Link'>Search books</Link></h2></header>
-        <h1>My exchanges</h1>
+        <Navbar />
+        <h1 className='titles'>My exchanges</h1>
         <ol>
           {list}
         </ol>

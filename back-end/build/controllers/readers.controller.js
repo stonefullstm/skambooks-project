@@ -52,7 +52,7 @@ const readers_service_1 = __importDefault(require("../services/readers.service")
 const statusCodes_1 = __importDefault(require("../statusCodes"));
 const utils_1 = require("../utils");
 require('dotenv/config');
-const secret = process.env.JWTSECRET || 'seusecretdetoken';
+const secret = process.env.JWT_SECRET || 'gatopreto';
 const READER_NOT_FOUND = 'Reader not found';
 const OK = 'OK';
 const getReaderById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -119,6 +119,7 @@ const getReaderByEmail = (req, res) => __awaiter(void 0, void 0, void 0, functio
         algorithm: 'HS256',
     };
     const token = jwt.sign(userData, secret, jwtConfig);
+    console.log(secret);
     res.status(statusCodes_1.default.OK).json({
         ok: true,
         status: statusCodes_1.default.OK,

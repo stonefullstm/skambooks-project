@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Link } from "react-router-dom";
 import '../App.css';
 import biblioteca from '../images/biblioteca.png';
 import coverbook from '../images/coverbook.jpg';
 import { myFetch } from '../services/fetchs';
 import './exchanges.css';
+import Navbar from './navbar/Navbar';
 
 class searcheBooks extends Component {
   state = {
@@ -101,10 +101,10 @@ class searcheBooks extends Component {
     };
     return (
       <div>
-        <img src={biblioteca} className='img11' alt='CoverUrl'/> 
+        <img src={biblioteca} className='img11' alt='CoverUrl' />
         <h1 className='skan'>SKAMBOOKS</h1>
-        <header className='header'><h2 className='book'><Link to='/skambooks' className='Link'>My books</Link></h2><h2><Link to='/exchange' className='Link'>My exchanges</Link></h2><h2 className='search'>Search books</h2></header>
-        <h1>Search books</h1>
+        <Navbar />
+        <h1 className='titles'>Search books</h1>
         <div onChange={this.handleChange} className='filtered'>
           <input type="radio" value="All" name="gender" /> <h2>All</h2>
           <input type="radio" value="Title" name="gender" /> <h2>Title</h2>

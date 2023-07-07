@@ -33,12 +33,14 @@ const getBookById = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     const result = yield books_service_1.default.getBookById(Number(id));
     if (result) {
         return res.status(statusCodes_1.default.OK).json({
+            ok: true,
             status: statusCodes_1.default.OK,
             message: OK,
             data: result
         });
     }
     return res.status(statusCodes_1.default.NOT_FOUND).json({
+        ok: false,
         status: statusCodes_1.default.NOT_FOUND,
         message: BOOK_NOT_FOUND,
         data: {}
@@ -49,6 +51,7 @@ const deleteBook = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     const result = yield books_service_1.default.getBookById(Number(id));
     if (!result) {
         return res.status(statusCodes_1.default.NOT_FOUND).json({
+            ok: false,
             status: statusCodes_1.default.NOT_FOUND,
             message: BOOK_NOT_FOUND,
             data: {}
@@ -57,6 +60,7 @@ const deleteBook = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     const exchanges = yield exchanges_service_1.default.getAllExchangesByBook(Number(id));
     if (exchanges && exchanges.length > 0) {
         return res.status(statusCodes_1.default.BAD_REQUEST).json({
+            ok: false,
             status: statusCodes_1.default.BAD_REQUEST,
             message: 'Book has exchanges',
             data: {}
@@ -65,6 +69,7 @@ const deleteBook = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     const deletedQty = yield books_service_1.default.deleteBook(Number(id));
     if (deletedQty) {
         return res.status(statusCodes_1.default.OK).json({
+            ok: true,
             status: statusCodes_1.default.OK,
             message: `Book deleted: ${id}`,
             data: {}
@@ -78,6 +83,7 @@ const createBook = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     const { id: readerId } = req.body.user;
     const newBook = yield books_service_1.default.createBook({ isbn, title, year, pages, readerId, coverUrl, authors });
     return res.status(statusCodes_1.default.CREATED).json({
+        ok: true,
         status: statusCodes_1.default.CREATED,
         message: 'Created book',
         data: newBook
@@ -89,6 +95,7 @@ const updateBook = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     const result = yield books_service_1.default.getBookById(Number(id));
     if (!result) {
         return res.status(statusCodes_1.default.NOT_FOUND).json({
+            ok: false,
             status: statusCodes_1.default.NOT_FOUND,
             message: BOOK_NOT_FOUND,
             data: {}
@@ -96,6 +103,7 @@ const updateBook = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     }
     if (result.readerId !== readerId) {
         return res.status(statusCodes_1.default.BAD_REQUEST).json({
+            ok: false,
             status: statusCodes_1.default.BAD_REQUEST,
             message: 'Book is not owned by this reader',
             data: {}
@@ -104,6 +112,7 @@ const updateBook = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     const updatedQty = yield books_service_1.default.updateBook(req.body, Number(id));
     if (updatedQty) {
         return res.status(statusCodes_1.default.OK).json({
+            ok: true,
             status: statusCodes_1.default.OK,
             message: `Updated book ${id}`,
             data: {}

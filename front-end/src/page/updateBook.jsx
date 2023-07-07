@@ -24,14 +24,12 @@ class updateBook extends Component {
         'Authorization': `${token}`,
       },
     };
-    // const book = await getBookById(update, options);
-    const book = await myFetch(options, `books/${id}`);
-    // console.log(book.isbn);
+    const { data } = await myFetch(options, `books/${id}`);
     this.setState({
-      isbn: book.isbn,
-      title: book.title,
-      year: book.year,
-      pages: book.pages,
+      isbn: data.isbn,
+      title: data.title,
+      year: data.year,
+      pages: data.pages,
     });
   } 
 

@@ -95,9 +95,17 @@ const createReader = async ( req: Request, res: Response) => {
   const result = await readersService.createReader(req.body);
   
   if (result) {
-    return res.status(statusCodes.CREATED).json(req.body);
+    return res.status(statusCodes.CREATED).json({
+      ok: true,
+      status: statusCodes.CREATED,
+      message: 'Created user',
+      data: req.body });
   }
-  return res.status(statusCodes.ERROR).json(internalError);
+  return res.status(statusCodes.ERROR).json({
+    ok: false,
+    status: statusCodes.ERROR,
+    message: 'Error',
+    data: {} });
 };
 
 const updateReader = async ( req: Request, res: Response) => {

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import '../App.css';
 import { myCep, myFetch } from '../services/fetchs';
+import { showAlertSucces, showAlert } from './alerts/alert';
 
 const MIN_LENGTH_INPUT = 8;
 export default class createUser extends Component {
@@ -28,7 +29,7 @@ export default class createUser extends Component {
       const { email, password, zipCode } = this.state;
       const result = await myCep(zipCode);
       if (result.erro) {
-        alert('CEP incorreto!');
+        showAlert('Error', 'Cep error');
       }
       const isDisabled = password.length < MIN_LENGTH_INPUT || !validEmail.test(email);
       this.setState({
@@ -60,7 +61,6 @@ export default class createUser extends Component {
       phone: phone,
       email: email,
       password: password,
-      // credits: credits,
     };
 
     const options = {
@@ -70,14 +70,14 @@ export default class createUser extends Component {
       },
       body: JSON.stringify(update),
     };
-    // const result = await createReader(options);
-    const result = await myFetch(options, 'readers');
-    console.log(result);
-    if (result) {
-      alert('Usuário criado com sucesso!');
-    };
-    const { history } = this.props;
-    history.push('/');
+    const { ok, status, message} = await myFetch(options, 'readers');
+    if (ok) {
+      showAlertSucces(status, message);
+      const { history } = this.props;
+      history.push('/');
+    } else {
+      showAlert(status, message);
+    }
   };
   render() {
     const { buttonIsDisabled, address, district, city, state } = this.state;

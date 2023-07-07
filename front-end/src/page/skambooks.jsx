@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Link } from "react-router-dom";
 import { idReader, requiretBooks, requiretReaders, updateBook } from '../actions/action';
 import '../App.css';
 import biblioteca from '../images/biblioteca.png';
@@ -11,6 +10,10 @@ import mais from '../images/mais.png';
 import troca from '../images/troca.png';
 import { myFetch } from '../services/fetchs';
 import './exchanges.css';
+import { showAlert, showAlertSucces, showAlertConfirm, showAlertSwitch } from './alerts/alert';
+import style from './css/skambooks.module.css';
+import Navbar from './navbar/Navbar';
+
 
 class skambooks extends Component {
   state = {
@@ -32,15 +35,12 @@ class skambooks extends Component {
       },
     };
     const { dispatch, history } = this.props;
-    // const books = await getAllBooks(options);
     const { status, message, data: books } = await myFetch(options, 'books');
-    if ( status !== 200) {
-      alert(message);
+    if (status !== 200) {
+      showAlert(status, message);
       history.push('/');
     }
-    // const reader = await getReaderById(options);
     const response = await myFetch(options, 'readers');
-    console.log(response);
     this.setState({
       reader: response.data.id,
     });
@@ -49,56 +49,55 @@ class skambooks extends Component {
     dispatch(result);
   };
 
-  handleExcluir = async (id) => {
-    let r = window.confirm(`Are you sure you want to delete the id ${id}?`);
-    if (r) {
-      const token = localStorage.getItem('token');
-      const options = {
-        method: 'DELETE',
-        headers: {
-          'Accept': 'application/json',
-          'Content-type': 'application/json',
-          'Authorization': `${token}`,
-        },
-      };
-
-      // const { message } = await deleteBook(id, options);
-      const { status, message } = await myFetch(options, `books/${id}`);
-      if ( status === '200' ) {
-        const { book, dispatch } = this.props;
-        const result = book.filter((item) => item.id !== id);
-        const r = requiretBooks(result);
-        dispatch(r);
-      }
-      alert(message);
-
-    }
+  handleDelete = (id) => {
+    showAlertConfirm(id, this.handleExcluir);
   };
 
+
+  handleExcluir = async (id) => {
+    const token = localStorage.getItem('token');
+    const options = {
+      method: 'DELETE',
+      headers: {
+        'Accept': 'application/json',
+        'Content-type': 'application/json',
+        'Authorization': `${token}`,
+      },
+    };
+    const { ok, message } = await myFetch(options, `books/${id}`);
+    if (ok) {
+      const { book, dispatch } = this.props;
+      const result = book.filter((item) => item.id !== id);
+      const r = requiretBooks(result);
+      dispatch(r);
+    }
+    showAlert(ok, message);
+  };
+
+  handleSwitch = (ids) => {
+    showAlertSwitch(ids, this.handleReader)
+  }
+
   handleReader = async (ids) => {
-    let r = window.confirm('Want to make the switch?');
-    if (r) {
-      const token = localStorage.getItem('token');
-      const options = {
-        method: 'GET',
-        headers: {
-          'Accept': 'application/json',
-          'Content-type': 'application/json',
-          'Authorization': `${token}`,
-        },
-      };
-      const { dispatch } = this.props;
-      const { reader } = this.state;
-      // const result = await getReaders(options);
-      const result = await myFetch(options, 'readers/names');
-      const readerSqt = result.filter((item) => item.id !== reader.id);
-      if (result) {
-        this.setState({
-          disabled: true,
-          id: ids,
-        });
-        dispatch(requiretReaders(readerSqt));
-      }
+    const token = localStorage.getItem('token');
+    const options = {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Content-type': 'application/json',
+        'Authorization': `${token}`,
+      },
+    };
+    const { dispatch } = this.props;
+    const { reader } = this.state;
+    const { data } = await myFetch(options, 'readers/names');
+    const readerSqt = data.filter((item) => item.id !== reader.id);
+    if (data.length > 0) {
+      this.setState({
+        disabled: true,
+        id: ids,
+      });
+      dispatch(requiretReaders(readerSqt));
     }
   };
 
@@ -128,8 +127,8 @@ class skambooks extends Component {
         body: JSON.stringify(update),
       };
       // const { message } = await createExchanges(options);
-      const { message } = await myFetch(options, 'exchanges');
-      alert(message);
+      const { status, message } = await myFetch(options, 'exchanges');
+      showAlertSucces(status, message);
       this.setState({
         disabled: false,
       })
@@ -154,7 +153,7 @@ class skambooks extends Component {
       if (item.readers.id === reader) {
         return (<div key={index} className='list'>
           <div className='coverbook'>
-            { item.coverUrl !== 'coverbook' ? <img src={item.coverUrl} className='img1' alt='CoverUrl'/> : <img src={coverbook} className='img1' alt='CoverUrl'/>}
+            {item.coverUrl !== 'coverbook' ? <img src={item.coverUrl} className='img1' alt='CoverUrl' /> : <img src={coverbook} className='img1' alt='CoverUrl' />}
           </div>
           <div className='li-exchange'>
             <li>book: <strong>{item.title}</strong></li>
@@ -165,17 +164,17 @@ class skambooks extends Component {
             <li>year: <strong>{item.year}</strong></li>
           </div>
           {disabled && item.id === id ? <div>
-            <p><strong>Whats user?</strong></p>
-            <select value={nome} onChange={this.handleSelect}>
+            <p><strong>whatuser?</strong></p>
+            <select value={nome} onChange={this.handleSelect} className={style.select}>
               {readers.map((i) => <option value={i.name}>{i.name}</option>)}
             </select>
-            <button type='button' onClick={() => this.handleSender(item.id)}> Trocar </button>
+            <button type='button' className={style.switch} onClick={() => this.handleSender(item.id)}> Trocar </button>
           </div> : null}
 
           <div className='div-button'>
             <button type='button' className='button-list' onClick={() => this.handleUpdate(item.id)}><img src={editar} alt='images' className='img' /></button>
-            <button type='button' className='button-list' onClick={() => this.handleExcluir(item.id)}><img src={excluir} alt='images' className='img' /></button>
-            <button type='button' className='button-list' onClick={() => this.handleReader(item.id)}><img src={troca} alt='images' className='img' /></button>
+            <button type='button' className='button-list' onClick={() => this.handleDelete(item.id)}><img src={excluir} alt='images' className='img' /></button>
+            <button type='button' className='button-list' onClick={() => this.handleSwitch(item.id)}><img src={troca} alt='images' className='img' /></button>
           </div>
         </div>)
       }
@@ -183,17 +182,12 @@ class skambooks extends Component {
     });
     return (
       <div>
-        <img src={biblioteca} className='img11' alt='CoverUrl'/> 
+        <img src={biblioteca} className='img11' alt='CoverUrl' />
         <h1 className='skan'>SKAMBOOKS</h1>
-        <header className='header'>
-          <h2 className='book'>My books</h2>
-          <h2><Link to='/exchange' className='Link'>My exchanges</Link></h2>
-          <h2 className='search'><Link to='/search' className='Link'>Search books</Link></h2>
-          <h2 className='logout'><Link to='/' className='Link'>Logout</Link></h2>
-        </header>
-        <h1>My books</h1>
+        <Navbar />
+        <h1 className='titles'>My books</h1>
         <button type='button'
-          className='button-mais' onClick={ this.handleMais }><img src={mais} alt="Images" className='mais' /></button>
+          className='button-mais' onClick={this.handleMais}><img src={mais} alt="Images" className='mais' /></button>
         <ol>
           {list}
         </ol>
