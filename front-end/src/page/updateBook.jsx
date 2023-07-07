@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import '../App.css';
 import { myFetch } from '../services/fetchs';
+import { showAlertSucces } from './alerts/alert';
 
 const MIN_ISBN = 13;
 const MIN_YEAR = 4;
@@ -64,9 +65,8 @@ class updateBook extends Component {
       },
       body: JSON.stringify(updated),
     };
-    // const { message } = await updateBooks(update, options);
-    const { message } = await myFetch(options, `books/${id}`);
-    alert(message);
+    const { status, message } = await myFetch(options, `books/${id}`);
+    showAlertSucces(status, message);
     history.push('/skambooks');
   };
 
