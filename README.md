@@ -1,20 +1,16 @@
 # Project Skambooks
 Uma aplicação full stack para troca de livros entre leitores. Leitores se cadastram na aplicação e adicionam seus livros disponíveis para troca. A cada livro trocado, a pessoa leitora que envia o livro ganha um crédito, o que dá direito a receber outro livro. 
 
-## Status do projeto
+# :construction: PROJETO FULLSTACK_SKAMBOOKS! :construction:
 
 <p align="center">
 <img src="https://img.shields.io/badge/STATUS-EM DESENVOLVIMENTO-blue"/>
 </p>
 
-
-## Instalação/Execução 
- 
-Aplicação pode ser executada em https://skambooks-production.up.railway.app/
-
 ## Funcionalidades 
  
-- Cadastro de leitores na plataforma, com definição de login e senha 
+- Cadastro de leitores na plataforma, com definição de login e senha
+  <img src="front-end/src/images/LoginSkambooks.png" alt="image-login"/>
 - Leitor cadastra seus livros disponíveis para troca (caso seja um leitor novo, este ganha 1 crédito). Os créditos habilitam os leitores a solicitar uma troca (1 crédito = 1 livro)
 - Leitor-1 envia livro para o Leitor-2. É necessário que o Leitor-2 tenha créditos
 - Leitor-2 recepciona o livro, o qual passa a ser de sua propriedade
