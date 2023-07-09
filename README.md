@@ -14,6 +14,7 @@ Uma aplicação full stack para troca de livros entre leitores. Leitores se cada
 - Leitor cadastra seus livros disponíveis para troca (caso seja um leitor novo, este ganha 1 crédito). Os créditos habilitam os leitores a solicitar uma troca (1 crédito = 1 livro)
   <img src="front-end/src/images/skamboksInitial.png" alt="image-login"/>
 - Leitor-1 envia livro para o Leitor-2. É necessário que o Leitor-2 tenha créditos
+  <img src="front-end/src/images/Allskambooks.png" alt="image-login"/>
 - Leitor-2 recepciona o livro, o qual passa a ser de sua propriedade
 - Leitor pode alterar/remover livro de sua propriedade
 - A logística da troca não é gerenciada pela aplicação, ficando sob responsabilidade dos leitores
