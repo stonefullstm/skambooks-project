@@ -115,10 +115,15 @@ const updateBook = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             ok: true,
             status: statusCodes_1.default.OK,
             message: `Updated book ${id}`,
-            data: {}
+            data: updatedQty,
         });
     }
-    return res.status(statusCodes_1.default.ERROR).json(utils_1.internalError);
+    return res.status(statusCodes_1.default.ERROR).json({
+        ok: false,
+        status: statusCodes_1.default.ERROR,
+        message: utils_1.internalError,
+        data: {}
+    });
 });
 exports.default = {
     getAllBooks,

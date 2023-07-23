@@ -7,9 +7,9 @@
     "start": "ts-node src/index.ts",
     "build": "tsc",
     "start-prod": "tsc && node build/index.js",
-    "predev": "npm run build && npm run db:reset",
+    "predev": "npm run build",
     "dev": "nodemon --watch \"./src/**\" --ext \"ts,js\" --ignore \"src/**/*.spec.ts,src/**/*.json\" --exec \"ts-node src/index.ts\"",
-    "db:reset": "npx -y tsc && npx sequelize-cli db:drop && npx sequelize-cli db:create && npx sequelize-cli db:migrate && npx sequelize-cli db:seed:all"
+    "db:reset": "npx -y tsc && npx sequelize-cli db:migrate && npx sequelize-cli db:seed:all"
   },
   "keywords": [],
   "author": "",
@@ -35,6 +35,7 @@
     "joi": "^17.7.0",
     "jsonwebtoken": "^9.0.0",
     "morgan": "^1.10.0",
-    "sequelize": "^6.27.0"
+    "sequelize": "^6.27.0",
+    "sqlite3": "^5.1.6"
   }
 }
