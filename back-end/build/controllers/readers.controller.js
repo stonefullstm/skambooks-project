@@ -140,9 +140,19 @@ const createReader = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     }
     const result = yield readers_service_1.default.createReader(req.body);
     if (result) {
-        return res.status(statusCodes_1.default.CREATED).json(req.body);
+        return res.status(statusCodes_1.default.CREATED).json({
+            ok: true,
+            status: statusCodes_1.default.CREATED,
+            message: 'Created user',
+            data: req.body
+        });
     }
-    return res.status(statusCodes_1.default.ERROR).json(utils_1.internalError);
+    return res.status(statusCodes_1.default.ERROR).json({
+        ok: false,
+        status: statusCodes_1.default.ERROR,
+        message: 'Error',
+        data: {}
+    });
 });
 const updateReader = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.body.user;
